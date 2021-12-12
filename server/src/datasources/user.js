@@ -1,6 +1,18 @@
 const { DataSource } = require('apollo-datasource');
 const isEmail = require('isemail');
 
+/**
+ * The SpaceX API is a read-only data source for fetching launch data.
+ * We also need a writable data source that allows us to store application data, such as user identities and seat reservations.
+ * To accomplish this, we'll connect to a SQLite database and use Sequelize for our ORM.
+ * 
+ * Our package.json file includes these dependencies, so they were installed already with our npm install call.
+ */
+
+/**
+ * Apollo doesn't provide a canonical DataSource subclass for SQL databases at this time. 
+ * So, we've created a custom data source for our SQLite database by extending the generic DataSource class.
+ */
 class UserAPI extends DataSource {
   constructor({ store }) {
     super();
@@ -9,11 +21,12 @@ class UserAPI extends DataSource {
 
   /**
    * This is a function that gets called by ApolloServer when being setup.
-   * This function gets called with the datasource config including things
-   * like caches and context. We'll assign this.context to the request context
-   * here, so we can know about the user making requests
+   * This function gets called with the datasource config including things like caches and context.
+   * We'll assign this.context to the request context here, so we can know about the user making requests
    */
   initialize(config) {
+    // A graph API's context is an object that's shared across every resolver in a GraphQL request.
+    // The context is useful for storing and sharing user information.
     this.context = config.context;
   }
 
@@ -66,7 +79,7 @@ class UserAPI extends DataSource {
       where: { userId },
     });
     return found && found.length
-      ? found.map(l => l.dataValues.launchId).filter(l => !!l)
+      ? found.map((l) => l.dataValues.launchId).filter((l) => !!l)
       : [];
   }
 
