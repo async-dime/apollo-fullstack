@@ -5,12 +5,12 @@ const isEmail = require('isemail');
  * The SpaceX API is a read-only data source for fetching launch data.
  * We also need a writable data source that allows us to store application data, such as user identities and seat reservations.
  * To accomplish this, we'll connect to a SQLite database and use Sequelize for our ORM.
- * 
+ *
  * Our package.json file includes these dependencies, so they were installed already with our npm install call.
  */
 
 /**
- * Apollo doesn't provide a canonical DataSource subclass for SQL databases at this time. 
+ * Apollo doesn't provide a canonical DataSource subclass for SQL databases at this time.
  * So, we've created a custom data source for our SQLite database by extending the generic DataSource class.
  */
 class UserAPI extends DataSource {
