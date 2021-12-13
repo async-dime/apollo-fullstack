@@ -1,8 +1,9 @@
 require('dotenv').config();
 
 const { ApolloServer } = require('apollo-server');
-const typeDefs = require('./schema');
 const { createStore } = require('./utils');
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
 
 const LaunchAPI = require('./datasources/launch');
 const userAPI = require('./datasources/user');
@@ -10,13 +11,12 @@ const userAPI = require('./datasources/user');
 // function to set up our SQLite database
 const store = createStore();
 
-// async function startApolloServer(typeDefs, resolvers) {
-async function startApolloServer(typeDefs) {
+async function startApolloServer(typeDefs, resolvers) {
   const server = new ApolloServer({
     // cors: true,
     typeDefs,
-    // resolvers,
-    
+    resolvers,
+
     // connect instances of LaunchAPI and UserAPI to our graph
     dataSources: () => {
       return {
@@ -35,5 +35,4 @@ async function startApolloServer(typeDefs) {
     `);
 }
 
-// startApolloServer(typeDefs, resolvers);
-startApolloServer(typeDefs);
+startApolloServer(typeDefs, resolvers);
