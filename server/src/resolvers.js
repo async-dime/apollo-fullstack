@@ -4,8 +4,7 @@ module.exports = {
   Query: {
     launches: async (_, { pageSize = 20, after }, { dataSources }) => {
       const allLaunches = await dataSources.launchAPI.getAllLaunches();
-      // we want these in reverse chronological order
-      allLaunches.reverse();
+      allLaunches.reverse(); // we want these in reverse chronological order
       const launches = paginateResults({
         after,
         pageSize,
@@ -25,6 +24,17 @@ module.exports = {
     launch: (_, { id }, { dataSources }) =>
       dataSources.launchAPI.getLaunchById({ launchId: id }),
     me: (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser(),
+  },
+  Mutation: {
+    // enables a user to log in to our application
+    login: async (_, { email }, { dataSources }) => {
+      const user = await dataSources.userAPI.findOrCreateUser({ email });
+      if (user) {
+        // token field is represent the user's active session
+        user.token = Buffer.from(email).toString('base64');
+        return user;
+      }
+    },
   },
   Mission: {
     // The default size is 'LARGE' if not provided.
